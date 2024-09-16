@@ -1,0 +1,101 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model departments {
+  id               Int      @default(autoincrement())
+  name             String      @id(map: "department_pk") @db.VarChar
+  description      String?     @db.VarChar
+  isactive         Boolean?
+  activationdate   DateTime?   @db.Date
+  deactivationdate String?     @db.VarChar
+  lead             Int?
+  employees        employees[]
+}
+
+model employeeposition {
+  employeeid Int
+  positionid Int
+  employees  employees @relation(fields: [employeeid], references: [employeeid], onDelete: NoAction, onUpdate: NoAction, map: "employeeposition_employee_fk")
+  positions  positions @relation(fields: [positionid], references: [positionid], onDelete: NoAction, onUpdate: NoAction, map: "employeeposition_position_fk")
+
+  @@id([employeeid, positionid], map: "employeeposition_pk")
+}
+
+model employees {
+  personid         Int
+  payrate          Decimal?           @db.Money
+  active           Boolean?
+  startdate        DateTime?          @db.Date
+  enddate          DateTime?          @db.Date
+  employeeid       Int             @id(map: "employee_pk") @default(autoincrement())
+  team             Int?
+  department       String?            @db.VarChar
+  employeeposition employeeposition[]
+  departments      departments?       @relation(fields: [department], references: [name], onDelete: NoAction, onUpdate: NoAction, map: "employee_department_fk")
+  persons          persons            @relation(fields: [personid], references: [personid], onDelete: NoAction, onUpdate: NoAction, map: "employee_person_fk")
+  teams            teams[]
+}
+
+model persons {
+  personid  Int      @id(map: "person_pk") @default(autoincrement())
+  firstname String      @db.VarChar
+  lastname  String      @db.VarChar
+  phone     String?     @db.VarChar
+  address1  String?     @db.VarChar
+  address2  String?     @db.VarChar
+  city      String?     @db.VarChar
+  state     String?     @db.VarChar
+  zipcode   String?     @db.VarChar
+  employees employees[]
+}
+
+model positions {
+  positionid       Int             @id(map: "position_pk") @default(autoincrement())
+  name             String             @unique(map: "position_unique") @db.VarChar
+  description      String?            @db.VarChar
+  basepayrate      String?            @db.VarChar
+  employeeposition employeeposition[]
+}
+
+model systempermissions {
+  id             Int  @id @default(autoincrement())
+  permissiontype String? @db.VarChar
+}
+
+model systemresources {
+  id          Int  @id @default(autoincrement())
+  name        String? @db.VarChar
+  description String? @db.VarChar
+}
+
+model systemroles {
+  id          Int  @id @default(autoincrement())
+  name        String? @db.VarChar
+  description String? @db.VarChar
+}
+
+model systemusers {
+  id             Int    @id @default(autoincrement())
+  username       String?   @db.VarChar
+  email          String?   @db.VarChar
+  password       String?   @db.VarChar
+  active         Boolean?
+  createdate     DateTime? @db.Date
+  deactivatedate DateTime? @db.Date
+}
+
+model teams {
+  id               Int    @id(map: "team_pk") @default(autoincrement())
+  name             String?   @db.VarChar
+  lead             Int
+  isactive         Boolean?
+  activationdate   DateTime? @db.Date
+  deactivationdate DateTime? @db.Date
+  employees        employees @relation(fields: [lead], references: [employeeid], onDelete: NoAction, onUpdate: NoAction, map: "team_employee_fk")
+}

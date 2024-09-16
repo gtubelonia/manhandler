@@ -85,30 +85,49 @@ model positions {
 }
 
 model systempermissions {
-  id             Int     @id @default(autoincrement())
-  permissiontype String? @db.VarChar
+  id                Int                         @id @default(autoincrement())
+  permissiontype    String?                     @db.VarChar
+  systemrolesId     Int?
+  systemresources   systemresourcepermissions[]
+  systemresourcesId Int?
 }
 
 model systemresources {
-  id          Int     @id @default(autoincrement())
-  name        String? @db.VarChar
-  description String? @db.VarChar
+  id          Int                         @id @default(autoincrement())
+  name        String?                     @db.VarChar
+  description String?                     @db.VarChar
+  permissions systemresourcepermissions[]
+}
+
+model systemresourcepermissions {
+  systempermissions   systempermissions? @relation(fields: [systempermissionsId], references: [id])
+  systempermissionsId Int
+  systemresources     systemresources?   @relation(fields: [systemresourcesId], references: [id])
+  systemresourcesId   Int
+  systemroles         systemroles[]
+  id                  Int                @id @default(autoincrement())
+
+  @@unique([systemresourcesId, systempermissionsId])
 }
 
 model systemroles {
-  id          Int     @id @default(autoincrement())
-  name        String? @db.VarChar
-  description String? @db.VarChar
+  id                        Int                         @id @default(autoincrement())
+  name                      String?                     @db.VarChar
+  description               String?                     @db.VarChar
+  systemusers               systemusers[]
+  systemusersId             Int?
+  systemresourcepermissions systemresourcepermissions[]
 }
 
 model systemusers {
-  id             Int       @id @default(autoincrement())
-  username       String?   @db.VarChar
-  email          String?   @db.VarChar
-  password       String?   @db.VarChar
+  id             Int           @id @default(autoincrement())
+  username       String?       @db.VarChar
+  email          String?       @db.VarChar
+  password       String?       @db.VarChar
   active         Boolean?
-  createdate     DateTime? @db.Date
-  deactivatedate DateTime? @db.Date
+  createdate     DateTime?     @db.Date
+  deactivatedate DateTime?     @db.Date
+  roles          systemroles[]
 }
 
 model teams {

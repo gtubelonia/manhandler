@@ -34,4 +34,37 @@ async function UserRegister(req, res, next) {
     return res.status(201).send(ToUserDto(newUser));
 };
 
-module.exports = { UserRegister }
+async function UserDeactivate(req, res, next) {
+    const result = validationResult(req);
+    if (!result.isEmpty()) return res.send(result.array());
+    const data = matchedData(req);
+
+    let user = await prisma.systemusers.findFirst({
+        where: { id: parseInt(data.id) },
+    });
+
+    if (!user)
+        return res.status(400).send({ msg: "This User Does Not Exist" });
+    console.log(user);
+    
+    if (!user.active)
+        return res.status(400).send({ msg: "This User Has Already Been Deactivated" });
+
+    let updateUser = await prisma.systemusers.update({
+        where: {
+            id: parseInt(data.id)
+        },
+        data: {
+            active: false,
+            deactivatedate: new Date()
+        }
+    })
+
+    //TODO do more? find some way to remove related roles?
+
+    return res.status(200).send({
+        msg: `${updateUser.username} has been deactivated`
+    });
+}
+
+module.exports = { UserRegister, UserDeactivate }

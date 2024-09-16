@@ -5,7 +5,7 @@ var { query, checkSchema } = require('express-validator');
 var createUserValidationSchema = require('./validationSchemas/userCreate');
 var { PrismaClient } = require('@prisma/client');
 var prisma = new PrismaClient();
-const { UserRegister, UserDeactivate } = require('../controllers/users/userController');
+const { UserRegister, UserDeactivate, UserActivate } = require('../controllers/users/userController');
 
 /* GET users listing. */
 router.get('/all', async function (req, res, next) {
@@ -18,9 +18,15 @@ router.post('/register',
   asyncHandler(UserRegister)
 );
 
-router.patch('/deactivate/',
+router.patch('/deactivate',
   query('id').notEmpty().isNumeric(),
   asyncHandler(UserDeactivate)
-)
+);
+
+router.patch('/activate',
+  query('id').notEmpty().isNumeric(),
+  asyncHandler(UserActivate)
+);
+
 
 module.exports = router;

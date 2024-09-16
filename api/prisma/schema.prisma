@@ -78,23 +78,21 @@ model address {
 
 model positions {
   positionid       Int                @id(map: "position_pk") @default(autoincrement())
-  name             String             @unique(map: "position_unique") @db.VarChar
+  name             String             @unique @db.VarChar
   description      String?            @db.VarChar
   basepayrate      String?            @db.VarChar
   employeeposition employeeposition[]
 }
 
 model systempermissions {
-  id                Int                         @id @default(autoincrement())
-  permissiontype    String?                     @db.VarChar
-  systemrolesId     Int?
-  systemresources   systemresourcepermissions[]
-  systemresourcesId Int?
+  id              Int                         @id @default(autoincrement())
+  permissiontype  String?                     @db.VarChar @unique
+  systemresources systemresourcepermissions[]
 }
 
 model systemresources {
   id          Int                         @id @default(autoincrement())
-  name        String?                     @db.VarChar
+  name        String?                     @db.VarChar @unique
   description String?                     @db.VarChar
   permissions systemresourcepermissions[]
 }
@@ -112,23 +110,21 @@ model systemresourcepermissions {
 
 model systemroles {
   id                        Int                         @id @default(autoincrement())
-  name                      String?                     @db.VarChar
+  name                      String?                     @unique @db.VarChar
   description               String?                     @db.VarChar
   systemusers               systemusers[]
-  systemusersId             Int?
   systemresourcepermissions systemresourcepermissions[]
 }
 
 model systemusers {
   id             Int           @id @default(autoincrement())
   username       String?       @db.VarChar
-  email          String?       @db.VarChar
+  email          String?       @unique(map: "systemusers_unique") @db.VarChar
   password       String?       @db.VarChar
   active         Boolean?
   createdate     DateTime?     @db.Date
   deactivatedate DateTime?     @db.Date
   roles          systemroles[]
-  @@unique([email])
 }
 
 model teams {

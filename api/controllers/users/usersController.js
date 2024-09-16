@@ -15,9 +15,8 @@ async function UserRegister(req, res, next) {
         where: { email: data.email },
     });
 
-    if (user) {
+    if (user)
         return res.status(400).send({ msg: "This User Already Exists" });
-    }
 
     let hashword = await argonHash(data.password);
 
@@ -45,7 +44,6 @@ async function UserDeactivate(req, res, next) {
 
     if (!user)
         return res.status(400).send({ msg: "This User Does Not Exist" });
-    console.log(user);
 
     if (!user.active)
         return res.status(400).send({ msg: "This User Has Already Been Deactivated" });

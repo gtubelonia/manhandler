@@ -9,6 +9,6 @@ router.get('/', function (req, res, next) {
 });
 
 router.use('/users', usersRouter);
-router.use('//roles', rolesRouter);
+router.use('/roles', rolesRouter);
 
 module.exports = router;

@@ -5,7 +5,7 @@ var { query, checkSchema } = require('express-validator');
 var createUserValidationSchema = require('./validationSchemas/userCreate');
 var { PrismaClient } = require('@prisma/client');
 var prisma = new PrismaClient();
-const { UserRegister, UserDeactivate, UserActivate, UserGetAll } = require('../controllers/users/userController');
+const { UserRegister, UserDeactivate, UserActivate, UserGetAll } = require('../controllers/users/usersController');
 
 router.get('/all',
   asyncHandler(UserGetAll)

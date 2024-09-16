@@ -57,7 +57,6 @@ async function UserDeactivate(req, res, next) {
             deactivatedate: new Date()
         }
     })
-
     //TODO do more? find some way to remove related roles?
 
     return res.status(200).send({
@@ -90,7 +89,6 @@ async function UserActivate(req, res, next) {
             deactivatedate: new Date()
         }
     })
-
     //TODO do more? find some way to remove related roles?
 
     return res.status(200).send({

@@ -67,8 +67,6 @@ async function RoleUpdate(req, res, next) {
 
     let columns = {};
 
-    console.log(data);
-
     if (data.name)
         columns.name = data.name
     if (data.description)

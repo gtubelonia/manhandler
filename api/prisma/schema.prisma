@@ -128,6 +128,7 @@ model systemusers {
   createdate     DateTime?     @db.Date
   deactivatedate DateTime?     @db.Date
   roles          systemroles[]
+  @@unique([email])
 }
 
 model teams {

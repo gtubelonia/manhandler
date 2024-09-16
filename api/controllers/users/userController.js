@@ -9,7 +9,7 @@ async function UserRegister(req, res, next) {
     try {
         data.password = await argonHash(data.password);
 
-        const allUsers = await prisma.persons.find();
+        const allUsers = await prisma.systemusers.find();
     
         return res.status(201).send(ToUserDto(newUser));
     } catch (err) {

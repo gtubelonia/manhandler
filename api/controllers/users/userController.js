@@ -1,7 +1,7 @@
 var { PrismaClient } = require('@prisma/client');
 var prisma = new PrismaClient();
 var { matchedData, validationResult } = require('express-validator');
-var { ToUserDto } = require('./Dto/UserDto');
+var { ToUserDto } = require('./dto/userDto');
 var { argonHash, argonVerify } = require('../../utils/hash');
 
 
@@ -100,4 +100,10 @@ async function UserActivate(req, res, next) {
     });
 }
 
-module.exports = { UserRegister, UserDeactivate, UserActivate }
+async function UserGetAll(req, res, next) {
+    const allUsers = await prisma.systemusers.findMany();
+
+    return res.status(200).send(allUsers);
+}
+
+module.exports = { UserRegister, UserDeactivate, UserActivate, UserGetAll }

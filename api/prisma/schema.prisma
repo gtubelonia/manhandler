@@ -132,9 +132,9 @@ model systemusers {
 model teams {
   id               Int       @id(map: "team_pk") @default(autoincrement())
   name             String?   @db.VarChar
-  lead             Int
+  lead             Int?
   isactive         Boolean?
   activationdate   DateTime? @db.Date
   deactivationdate DateTime? @db.Date
-  employees        employees @relation(fields: [lead], references: [employeeid], onDelete: NoAction, onUpdate: NoAction, map: "team_employee_fk")
+  employees        employees? @relation(fields: [lead], references: [employeeid], onDelete: NoAction, onUpdate: NoAction, map: "team_employee_fk")
 }

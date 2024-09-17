@@ -80,19 +80,19 @@ model positions {
   positionid       Int                @id(map: "position_pk") @default(autoincrement())
   name             String             @unique @db.VarChar
   description      String?            @db.VarChar
-  basepayrate      String?            @db.VarChar
+  basepayrate      Decimal?           @db.Money
   employeeposition employeeposition[]
 }
 
 model systempermissions {
   id              Int                         @id @default(autoincrement())
-  permissiontype  String?                     @db.VarChar @unique
+  permissiontype  String?                     @unique @db.VarChar
   systemresources systemresourcepermissions[]
 }
 
 model systemresources {
   id          Int                         @id @default(autoincrement())
-  name        String?                     @db.VarChar @unique
+  name        String?                     @unique @db.VarChar
   description String?                     @db.VarChar
   permissions systemresourcepermissions[]
 }

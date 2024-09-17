@@ -4,6 +4,7 @@ var usersRouter = require('./users');
 var rolesRouter = require('./roles');
 var resourcesRouter = require('./resources');
 var employeesRouter = require('./employees');
+var positionsRouter = require('./positions');
 
 
 /* GET home page. */
@@ -15,5 +16,6 @@ router.use('/users', usersRouter);
 router.use('/roles', rolesRouter);
 router.use('/resources', resourcesRouter);
 router.use('/employees', employeesRouter);
+router.use('/positions', positionsRouter);
 
 module.exports = router;

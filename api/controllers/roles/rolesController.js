@@ -34,11 +34,11 @@ async function RoleDelete(req, res, next) {
     if (!result.isEmpty()) return res.send(result.array());
     const data = matchedData(req);
 
-    let user = await prisma.systemroles.findFirst({
+    let role = await prisma.systemroles.findFirst({
         where: { id: parseInt(data.id) },
     });
 
-    if (!user)
+    if (!role)
         return res.status(400).send({ msg: "This Role Does Not Exist" });
 
     let deleteRole = await prisma.systemroles.delete({

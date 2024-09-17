@@ -1,9 +1,8 @@
 var { PrismaClient } = require('@prisma/client');
 var prisma = new PrismaClient();
 var { matchedData, validationResult } = require('express-validator');
-var { ToUserDto } = require('./dto/userDto');
+var { ToUserDto } = require('./dtos/userDto');
 var { argonHash, argonVerify } = require('../../utils/hash');
-
 
 async function UserRegister(req, res, next) {
     const result = validationResult(req);

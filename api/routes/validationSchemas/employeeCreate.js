@@ -56,8 +56,8 @@ module.exports = createResourceValidationSchema = {
         }
     },
     department: {
-        isString: {
-            errorMessage: "department must be a string"
+        isInt: {
+            errorMessage: "department must be an integer"
         }
     },
 };

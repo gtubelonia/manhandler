@@ -8,14 +8,15 @@ datasource db {
 }
 
 model departments {
-  id               Int         @default(autoincrement())
-  name             String      @id(map: "department_pk") @db.VarChar
+  id               Int         @id(map: "department_pk") @default(autoincrement())
+  name             String      @unique @db.VarChar
   description      String?     @db.VarChar
   isactive         Boolean?
   activationdate   DateTime?   @db.Date
   deactivationdate String?     @db.VarChar
   lead             Int?
-  employees        employees[]
+  deptlead         employees?  @relation("DepartmentLeadToEmployee", fields: [lead], references: [employeeid])
+  employees        employees[] @relation("EmployeeToDepartment", map: "employee_department_fk")
 }
 
 model employeeposition {
@@ -37,9 +38,10 @@ model employees {
   enddate          DateTime?          @db.Date
   employeeid       Int                @id(map: "employee_pk") @default(autoincrement())
   team             Int?
-  department       String?            @db.VarChar
+  departments      departments?       @relation("EmployeeToDepartment", fields: [department], references: [id])
+  department       Int?
+  departmentlead   departments[]      @relation("DepartmentLeadToEmployee")
   employeeposition employeeposition[]
-  departments      departments?       @relation(fields: [department], references: [name], onDelete: NoAction, onUpdate: NoAction, map: "employee_department_fk")
   address          address[]
   teams            teams[]
   phone            phone[]

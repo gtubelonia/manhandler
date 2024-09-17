@@ -1,11 +1,10 @@
 var express = require('express');
 var router = express.Router();
 var asyncHandler = require('express-async-handler');
-var { query, checkSchema, check } = require('express-validator');
+var { query, checkSchema } = require('express-validator');
 var { PositionGetAll, PositionAdd, PositionUpdate, PositionDelete } = require('../controllers/positions/positionsController');
 var createPositionValidationSchema = require('./validationSchemas/positionCreate');
 var updatePositionValidationSchema = require('./validationSchemas/positionUpdate');
-const positionUpdate = require('./validationSchemas/positionUpdate');
 
 router.get('/all',
     asyncHandler(PositionGetAll)

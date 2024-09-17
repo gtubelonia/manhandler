@@ -57,6 +57,7 @@ async function RoleUpdate(req, res, next) {
     const result = validationResult(req);
     if (!result.isEmpty()) return res.send(result.array());
     const data = matchedData(req);
+    const body = matchedData(req, { locations: ['body'] });
 
     let role = await prisma.systemroles.findFirst({
         where: { name: data.name },
@@ -64,18 +65,11 @@ async function RoleUpdate(req, res, next) {
 
     if (!role) return res.status(400).send({ msg: "This Does Not Exist" });
 
-    let columns = {};
-
-    if (data.name)
-        columns.name = data.name
-    if (data.description)
-        columns.description = data.description
-
     const updatedRole = await prisma.systemroles.update({
         where: {
             id: parseInt(data.id)
         },
-        data: columns
+        data: body
     })
     //TODO: maybe add resources/permissions too?
     return res.status(200).send(updatedRole);

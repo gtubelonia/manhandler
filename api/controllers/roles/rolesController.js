@@ -1,7 +1,6 @@
 var { PrismaClient } = require('@prisma/client');
 var prisma = new PrismaClient();
 var { matchedData, validationResult } = require('express-validator');
-const { description } = require('../../routes/validationSchemas/roleCreate');
 
 async function RoleGetAll(req, res, next) {
     const allRoles = await prisma.systemroles.findMany();
@@ -72,14 +71,14 @@ async function RoleUpdate(req, res, next) {
     if (data.description)
         columns.description = data.description
 
-    const UpdatedRole = await prisma.systemroles.update({
+    const updatedRole = await prisma.systemroles.update({
         where: {
             id: parseInt(data.id)
         },
         data: columns
     })
     //TODO: maybe add resources/permissions too?
-    return res.status(200).send(UpdatedRole);
+    return res.status(200).send(updatedRole);
 }
 
 

@@ -67,9 +67,6 @@ model phonetype {
 model address {
   addressid  Int       @id(map: "address_pk") @default(autoincrement())
   employeeid Int
-  firstname  String    @db.VarChar
-  lastname   String    @db.VarChar
-  phone      String?   @db.VarChar
   address1   String?   @db.VarChar
   address2   String?   @db.VarChar
   city       String?   @db.VarChar

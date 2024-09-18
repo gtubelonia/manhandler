@@ -7,6 +7,7 @@ var employeesRouter = require('./employees');
 var positionsRouter = require('./positions');
 var departmentsRouter = require('./departments');
 var teamsRouter = require('./teams');
+var phonesRouter = require('./phones');
 
 
 /* GET home page. */
@@ -21,6 +22,6 @@ router.use('/employees', employeesRouter);
 router.use('/positions', positionsRouter);
 router.use('/departments', departmentsRouter);
 router.use('/teams', teamsRouter);
-
+router.use('/phones', phonesRouter);
 
 module.exports = router;

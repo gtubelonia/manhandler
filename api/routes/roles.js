@@ -6,9 +6,6 @@ var createRoleValidationSchema = require('./validationSchemas/roleCreate');
 var updateRoleValidationSchema = require('./validationSchemas/roleUpdate');
 const { RoleGetAll, RoleAdd, RoleDelete, RoleUpdate } = require('../controllers/roles/rolesController');
 
-var { PrismaClient } = require('@prisma/client');
-var prisma = new PrismaClient();
-
 router.get('/all',
     asyncHandler(RoleGetAll)
 )

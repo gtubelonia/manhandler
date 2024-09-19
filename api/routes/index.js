@@ -8,6 +8,8 @@ var positionsRouter = require('./positions');
 var departmentsRouter = require('./departments');
 var teamsRouter = require('./teams');
 var phonesRouter = require('./phones');
+var addressesRouter = require('./addresses');
+
 
 
 /* GET home page. */
@@ -23,5 +25,6 @@ router.use('/positions', positionsRouter);
 router.use('/departments', departmentsRouter);
 router.use('/teams', teamsRouter);
 router.use('/phones', phonesRouter);
+router.use('/addresses', addressesRouter);
 
 module.exports = router;

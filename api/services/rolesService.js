@@ -1,76 +1,44 @@
-var { PrismaClient } = require('@prisma/client');
-var prisma = new PrismaClient();
-var { matchedData, validationResult } = require('express-validator');
+const { matchedData, validationResult } = require('express-validator');
+const rolesModel = require('../model/roles')
 
-exports.RoleGetAll = async function (req, res, next) {
-    const allRoles = await prisma.systemroles.findMany();
+exports.RoleGetAll = async function () {
+    const allRoles = await rolesModel.GetAllRoles()
 
-    return res.status(200).send(allRoles);
+    return allRoles;
 };
 
-exports.RoleAdd = async function (req, res, next) {
-    const result = validationResult(req);
-    if (!result.isEmpty()) return res.send(result.array());
-    const data = matchedData(req);
+exports.RoleAdd = async function (body) {
+    let role = await rolesModel.FindRoleByName(body.name);
 
-    let role = await prisma.systemroles.findFirst({
-        where: { name: data.name },
-    });
+    if (role) throw { status: 400, message: "This Role Already Exists" };
 
-    if (role) return res.status(400).send({ msg: "This Role Already Exists" });
+    const newRole = await rolesModel.CreateRole(body);
 
-    const newRole = await prisma.systemroles.create({
-        data: {
-            name: data.name,
-            description: data.description
-        }
-    })
-    //TODO: maybe add resources/permissions too?
-    return res.status(200).send(newRole);
+    return newRole;
 }
 
-exports.RoleDelete = async function (req, res, next) {
-    const result = validationResult(req);
-    if (!result.isEmpty()) return res.send(result.array());
-    const data = matchedData(req);
+exports.RoleDelete = async function (id) {
+    let roleId = parseInt(id);
 
-    let role = await prisma.systemroles.findFirst({
-        where: { id: parseInt(data.id) },
-    });
+    let role = await rolesModel.FindRoleById(roleId);
 
     if (!role)
-        return res.status(400).send({ msg: "This Role Does Not Exist" });
+        throw { status: 400, message: "This Role Does Not Exist" };
 
-    let deleteRole = await prisma.systemroles.delete({
-        where: {
-            id: parseInt(data.id)
-        }
-    })
+    let deleteRole = rolesModel.DeleteRole(roleId);
 
-    //TODO do more? find some way to remove related permissions/resources
-    return res.status(200).send({
-        msg: `${deleteRole.name} has been deleted`
-    });
+    return deleteRole
 }
 
-exports.RoleUpdate = async function (req, res, next) {
-    const result = validationResult(req);
-    if (!result.isEmpty()) return res.send(result.array());
-    const data = matchedData(req);
-    const body = matchedData(req, { locations: ['body'] });
+exports.RoleUpdate = async function (id, body) {
+    let roleId = parseInt(id);
 
-    let role = await prisma.systemroles.findFirst({
-        where: { name: data.name },
-    });
+    let role = await rolesModel.FindRoleById(roleId);
 
-    if (!role) return res.status(400).send({ msg: "This Does Not Exist" });
+    if (!role)
+            throw { status: 400, message: "This Role Does Not Exist" };
 
-    const updatedRole = await prisma.systemroles.update({
-        where: {
-            id: parseInt(data.id)
-        },
-        data: body
-    })
-    //TODO: maybe add resources/permissions too?
-    return res.status(200).send(updatedRole);
+    let updatedRole = await rolesModel.UpdateRole(roleId, body);
+
+    return updatedRole;
 }

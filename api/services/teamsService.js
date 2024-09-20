@@ -1,77 +1,39 @@
-var { PrismaClient } = require('@prisma/client');
-var prisma = new PrismaClient();
-var { matchedData, validationResult } = require('express-validator');
+const { matchedData, validationResult } = require('express-validator');
+const teamsModel = require('../model/teams')
 
-exports.TeamGetAll = async function (req, res, next) {
-    const allteams = await prisma.teams.findMany();
-
-    return res.status(200).send(allteams);
+exports.TeamGetAll = async function () {
+    const allTeams = await teamsModel.GetAllTeams();
+    
+    return allTeams;
 };
 
-exports.TeamAdd = async function (req, res, next) {
-    const result = validationResult(req);
-    if (!result.isEmpty()) return res.send(result.array());
-    const data = matchedData(req, { includeOptionals: true });
+exports.TeamAdd = async function (body) {
+    let team = await teamsModel.GetTeamByName(body.name);
 
-    let team = await prisma.teams.findFirst({
-        where: { name: data.name },
-    });
+    if (team) throw { status: 404, message: "This Team Already Exists" };
 
-    if (team) return res.status(400).send({ msg: "This Team Already Exists" });
-
-    const newteam = await prisma.teams.create({
-        data: {
-            name: data.name,
-            isactive: data.isactive,
-            activationdate: new Date(),
-            lead: data.lead
-        }
-    })
-
-    return res.status(200).send(newteam);
+    let newTeam = await teamsModel.CreateTeam(body);
+    return newTeam;
 }
 
-exports.TeamDelete = async function (req, res, next) {
-    const result = validationResult(req);
-    if (!result.isEmpty()) return res.send(result.array());
-    const data = matchedData(req);
+exports.TeamDelete = async function (id) {
+    let teamId = parseInt(id);
 
-    let team = await prisma.teams.findFirst({
-        where: { id: parseInt(data.id) },
-    });
+    let team = await teamsModel.GetTeamById(teamId);
 
-    if (!team)
-        return res.status(400).send({ msg: "This team Does Not Exist" });
+    if (!team) throw { status: 404, message: "This team Does Not Exist" };
 
-    let deleteTeam = await prisma.teams.delete({
-        where: {
-            id: parseInt(data.id)
-        }
-    })
+    let deleteTeam = await teamsModel.DeleteTeamById(teamId);
 
-    return res.status(200).send({
-        msg: `${deleteTeam.name} has been deleted`
-    });
+    return deleteTeam;
 }
 
-exports.TeamUpdate = async function (req, res, next) {
-    const result = validationResult(req);
-    if (!result.isEmpty()) return res.send(result.array());
-    const data = matchedData(req);
-    const body = matchedData(req, { locations: ['body'] });
+exports.TeamUpdate = async function (id, body) {
+    let teamId = parseInt(id)
+    let team = await teamsModel.GetTeamById(teamId)
+    if (!team) throw { status: 404, message: "This team Does Not Exist" };
 
-    let team = await prisma.teams.findFirst({
-        where: { id: parseInt(data.id) },
-    });
+    const updatedTeam = teamsModel.UpdateTeamById(teamId, body);
 
-    if (!team) return res.status(400).send({ msg: "This Does Not Exist" });
-
-    const updatedTeam = await prisma.teams.update({
-        where: {
-            id: parseInt(data.id)
-        },
-        data: body
-    })
-
-    return res.status(200).send(updatedTeam);
+    return updatedTeam;
 }

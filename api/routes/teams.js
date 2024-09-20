@@ -2,28 +2,28 @@ const express = require('express');
 const router = express.Router();
 const asyncHandler = require('express-async-handler');
 const { query, checkSchema } = require('express-validator');
-const teamsService = require('../services/teamsService');
+const teamsController = require('../controllers/teams/teams.controller');
 const createTeamValidationSchema = require('./validationSchemas/teamCreate');
 const updateTeamValidationSchema = require('./validationSchemas/teamUpdate');
 
 router.get('/all',
-    asyncHandler(teamsService.TeamGetAll)
+    asyncHandler(teamsController.GetAllTeams)
 )
 
 router.post('/add',
     checkSchema(createTeamValidationSchema),
-    asyncHandler(teamsService.TeamAdd)
+    asyncHandler(teamsController.AddTeam)
 )
 
 router.patch('/update',
     query('id').notEmpty().isNumeric(),
     checkSchema(updateTeamValidationSchema),
-    asyncHandler(teamsService.TeamUpdate)
+    asyncHandler(teamsController.UpdateTeam)
 )
 
 router.delete('/delete',
     query('id').notEmpty().isNumeric(),
-    asyncHandler(teamsService.TeamDelete)
+    asyncHandler(teamsController.DeleteTeam)
 )
 
 module.exports = router;

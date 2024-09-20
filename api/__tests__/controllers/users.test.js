@@ -1,4 +1,4 @@
-const { UserRegister } = require('../../controllers/users/usersController');
+const { UserRegister } = require('../../services/usersService');
 const { argonHash, argonVerify } = require('../../utils/hash');
 
 const mockRequest = {

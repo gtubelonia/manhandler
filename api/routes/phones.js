@@ -4,27 +4,28 @@ var asyncHandler = require('express-async-handler');
 var { query, checkSchema } = require('express-validator');
 var createPhoneValidationSchema = require('./validationSchemas/phoneCreate');
 var updatePhoneValidationSchema = require('./validationSchemas/phoneUpdate');
-const { PhoneGetAllByEmployeeId, PhoneAddToUser, PhoneDelete, PhoneUpdate } = require('../controllers/phones/phonesController.js');
+const phoneController = require('../controllers/phones/phones.controller');
 
 router.get('/all',
-    asyncHandler(PhoneGetAllByEmployeeId)
+    query('employeeid').notEmpty().isNumeric(),
+    asyncHandler(phoneController.GetEmployeePhones)
 )
 
 router.post('/add',
     query('employeeid').notEmpty().isNumeric(),
     checkSchema(createPhoneValidationSchema),
-    asyncHandler(PhoneAddToUser)
+    asyncHandler(phoneController.AddPhoneToUser)
 )
 
 router.delete('/delete',
     query('id').notEmpty().isNumeric(),
-    asyncHandler(PhoneDelete)
+    asyncHandler(phoneController.DeletePhoneFromUser)
 )
 
 router.patch('/update',
     query('id').notEmpty().isNumeric(),
     checkSchema(updatePhoneValidationSchema),
-    asyncHandler(PhoneUpdate)
+    asyncHandler(phoneController.UpdatePhoneForUser)
 )
 
 module.exports = router;

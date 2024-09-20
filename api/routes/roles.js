@@ -4,26 +4,26 @@ var asyncHandler = require('express-async-handler');
 var { query, checkSchema } = require('express-validator');
 var createRoleValidationSchema = require('./validationSchemas/roleCreate');
 var updateRoleValidationSchema = require('./validationSchemas/roleUpdate');
-const { RoleGetAll, RoleAdd, RoleDelete, RoleUpdate } = require('../controllers/roles/rolesController');
+const rolesController = require('../controllers/roles/roles.controller');
 
 router.get('/all',
-    asyncHandler(RoleGetAll)
+    asyncHandler(rolesController.GetAllRoles)
 )
 
 router.post('/add',
     checkSchema(createRoleValidationSchema),
-    asyncHandler(RoleAdd)
+    asyncHandler(rolesController.AddRole)
 )
 
 router.delete('/delete',
     query('id').notEmpty().isNumeric(),
-    asyncHandler(RoleDelete)
+    asyncHandler(rolesController.DeleteRole)
 )
 
 router.patch('/update',
     query('id').notEmpty().isNumeric(),
     checkSchema(updateRoleValidationSchema),
-    asyncHandler(RoleUpdate)
+    asyncHandler(rolesController.UpdateRole)
 )
 
 module.exports = router;

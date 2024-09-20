@@ -1,86 +1,46 @@
-var { PrismaClient } = require('@prisma/client');
-var prisma = new PrismaClient();
-var { matchedData, validationResult } = require('express-validator');
+const phonesModel = require('../model/phone');
 
-exports.PhoneGetAllByEmployeeId = async function (req, res, next) {
-    const allPhones = await prisma.phone.findMany({
-        where: {
-            employeeid: parseInt(data.id)
-        }
-    });
+exports.PhoneGetAllByEmployeeId = async function (id) {
+    let employeeId = parseInt(id)
+    console.log(employeeId)
+    let allPhones = await phonesModel.GetAllPhonesByEmployeeId(employeeId);
 
-    return res.status(200).send(allPhones);
+    return allPhones;
 };
 
-exports.PhoneAddToUser = async function (req, res, next) {
-    const result = validationResult(req);
-    if (!result.isEmpty()) return res.send(result.array());
-    const data = matchedData(req);
+exports.PhoneAddToUser = async function (id, data) {
+    let employeeId = parseInt(id);
 
-    let phone = await prisma.phone.findFirst({
-        where: {
-            countrycode: data.countrycode,
-            areacode: data.areacode,
-            phonenumber: data.phonenumber
-        },
-    });
+    let phone = await phonesModel.GetPhoneByNumber(data);
 
-    if (phone) return res.status(400).send({ msg: "This Phone Number Already Exists" });
+    if (phone) throw { status: 400, message: "This Phone Number Already Exists" };
 
-    const newPhone = await prisma.phone.create({
-        data: {
-            countrycode: data.countrycode,
-            areacode: data.areacode,
-            phonenumber: data.phonenumber,
-            phonetype: data.phonetype,
-            employeeid: parseInt(data.employeeid)
-        }
-    })
+    let newPhone = phonesModel.CreatePhone(employeeId, data);
 
-    return res.status(200).send(newPhone);
+    return newPhone;
 }
 
-exports.PhoneDelete = async function (req, res, next) {
-    const result = validationResult(req);
-    if (!result.isEmpty()) return res.send(result.array());
-    const data = matchedData(req);
+exports.PhoneDelete = async function (id) {
+    let phoneId = parseInt(id)
 
-    let phone = await prisma.phone.findFirst({
-        where: { id: parseInt(data.id) },
-    });
+    let phone = await phonesModel.GetPhoneById(phoneId);
 
     if (!phone)
-        return res.status(400).send({ msg: "This Phone Does Not Exist" });
+        throw { status: 400, message: "This Phone Does Not Exist" };
 
-    let deletePhone = await prisma.phone.delete({
-        where: {
-            id: parseInt(data.id)
-        }
-    })
+    let deletePhone = await phonesModel.DeletePhone(phoneId);
 
-    return res.status(200).send({
-        msg: `${deletePhone.phonenumber} has been deleted`
-    });
+    return deletePhone;
 }
 
-exports.PhoneUpdate = async function (req, res, next) {
-    const result = validationResult(req);
-    if (!result.isEmpty()) return res.send(result.array());
-    const data = matchedData(req);
-    const body = matchedData(req, { locations: ['body'] });
+exports.PhoneUpdate = async function (id, body) {
+    let phoneId = parseInt(id);
 
-    let phone = await prisma.phone.findFirst({
-        where: { id: parseInt(data.id) },
-    });
+    let phone = await phonesModel.GetPhoneById(phoneId);
 
-    if (!phone) return res.status(400).send({ msg: "This Does Not Exist" });
+    if (!phone) throw { status: 400, message: "This Phone Does Not Exist" };
 
-    const updatedPhone = await prisma.phone.update({
-        where: {
-            id: parseInt(data.id)
-        },
-        data: body
-    })
+    const updatePhone = await phonesModel.UpdatePhone(phoneId, body);
 
-    return res.status(200).send(updatedPhone);
+    return updatePhone;
 }

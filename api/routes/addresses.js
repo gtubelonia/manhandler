@@ -4,28 +4,28 @@ var asyncHandler = require('express-async-handler');
 var { query, checkSchema } = require('express-validator');
 var createAddressValidationSchema = require('./validationSchemas/addressCreate');
 var updateAddressValidationSchema = require('./validationSchemas/addressUpdate');
-const addressService = require('../services/addressService');
+const addressController = require('../controllers/address/addresses.controller');
 
 router.get('/all',
     query('employeeid').notEmpty().isNumeric(),
-    asyncHandler(addressService.AddressGetAllByEmployeeId)
+    asyncHandler(addressController.GetAddressByEmployeeId)
 )
 
 router.post('/add',
     query('employeeid').notEmpty().isNumeric(),
     checkSchema(createAddressValidationSchema),
-    asyncHandler(addressService.AddressAddToEmployee)
+    asyncHandler(addressController.AddAddressToEmployee)
 )
 
 router.delete('/delete',
     query('addressid').notEmpty().isNumeric(),
-    asyncHandler(addressService.AddressDelete)
+    asyncHandler(addressController.DeleteAddressFromEmployee)
 )
 
 router.patch('/update',
     query('addressid').notEmpty().isNumeric(),
     checkSchema(updateAddressValidationSchema),
-    asyncHandler(addressService.AddressUpdate)
+    asyncHandler(addressController.UpdateAddressForEmployee)
 )
 
 module.exports = router;

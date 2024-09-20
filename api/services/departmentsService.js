@@ -1,78 +1,37 @@
-var { PrismaClient } = require('@prisma/client');
-var prisma = new PrismaClient();
-var { matchedData, validationResult } = require('express-validator');
+const departmentModel = require('../model/department')
 
-exports.DepartmentGetAll = async function (req, res, next) {
-    const alldepartments = await prisma.departments.findMany();
-
-    return res.status(200).send(alldepartments);
+exports.DepartmentGetAll = async function () {
+    const allDepartments = await departmentModel.GetAllDepartments();
+    return allDepartments;
 };
 
-exports.DepartmentAdd = async function (req, res, next) {
-    const result = validationResult(req);
-    if (!result.isEmpty()) return res.send(result.array());
-    const data = matchedData(req, { includeOptionals: true });
+exports.DepartmentAdd = async function (data) {
+    let department = await departmentModel.GetDepartmentByName(data.name);
 
-    let department = await prisma.departments.findFirst({
-        where: { name: data.name },
-    });
+    if (department) throw { status: 400, message: "This Department Already Exists" };
 
-    if (department) return res.status(400).send({ msg: "This Department Already Exists" });
-
-    const newdepartment = await prisma.departments.create({
-        data: {
-            name: data.name,
-            description: data.description,
-            isactive: data.isactive,
-            activationdate: new Date(),
-            lead: data.lead
-        }
-    })
-
-    return res.status(200).send(newdepartment);
+    const newDepartment = await departmentModel.CreateDepartment(data);
+    return newDepartment;
 }
 
-exports.DepartmentDelete = async function (req, res, next) {
-    const result = validationResult(req);
-    if (!result.isEmpty()) return res.send(result.array());
-    const data = matchedData(req);
-
-    let department = await prisma.departments.findFirst({
-        where: { id: parseInt(data.id) },
-    });
-
+exports.DepartmentDelete = async function (id) {
+    const departmentId = parseInt(id);
+    const department = await departmentModel.GetDepartmentById(departmentId);
     if (!department)
-        return res.status(400).send({ msg: "This department Does Not Exist" });
+        throw { status: 400, message: "This department Does Not Exist" };
 
-    let deleteDepartment = await prisma.departments.delete({
-        where: {
-            id: parseInt(data.id)
-        }
-    })
+    const deletedDepartment = await departmentModel.DeleteDepartment(departmentId);
 
-    return res.status(200).send({
-        msg: `${deleteDepartment.name} has been deleted`
-    });
+    return deletedDepartment;
 }
 
-exports.DepartmentUpdate = async function (req, res, next) {
-    const result = validationResult(req);
-    if (!result.isEmpty()) return res.send(result.array());
-    const data = matchedData(req);
-    const body = matchedData(req, { locations: ['body'] });
+exports.DepartmentUpdate = async function (id, data) {
+    const departmentId = parseInt(id);
+    const department = await departmentModel.GetDepartmentById(departmentId);
 
-    let department = await prisma.departments.findFirst({
-        where: { id: parseInt(data.id) },
-    });
+    if (!department) throw { status: 400, message: "This department Does Not Exist" };
 
-    if (!department) return res.status(400).send({ msg: "This Does Not Exist" });
+    const updatedDepartment = await departmentModel.UpdateDepartment(departmentId, data);
 
-    const updatedDepartment = await prisma.departments.update({
-        where: {
-            id: parseInt(data.id)
-        },
-        data: body
-    })
-
-    return res.status(200).send(updatedDepartment);
+    return updatedDepartment;
 }

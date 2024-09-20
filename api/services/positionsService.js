@@ -1,76 +1,43 @@
-var { PrismaClient } = require('@prisma/client');
-var prisma = new PrismaClient();
-var { matchedData, validationResult } = require('express-validator');
+const positionsModel = require('../model/position');
+
 
 exports.PositionGetAll = async function (req, res, next) {
-    const allpositions = await prisma.positions.findMany();
+    const allPositions = await positionsModel.GetAllPositions();
 
-    return res.status(200).send(allpositions);
+    return allPositions;
 };
 
-exports.PositionAdd = async function (req, res, next) {
-    const result = validationResult(req);
-    if (!result.isEmpty()) return res.send(result.array());
-    const data = matchedData(req);
+exports.PositionAdd = async function (data) {
+    let position = await positionsModel.GetPositionByName(data.name);
 
-    let position = await prisma.positions.findFirst({
-        where: { name: data.name },
-    });
+    if (position) throw { status: 400, message: "This Position Already Exists" };
 
-    if (position) return res.status(400).send({ msg: "This Position Already Exists" });
+    let newPosition = await positionsModel.CreatePosition(data);
 
-    const newposition = await prisma.positions.create({
-        data: {
-            name: data.name,
-            description: data.description,
-            basepayrate: data.basepayrate
-        }
-    })
-
-    return res.status(200).send(newposition);
+    return newPosition;
 }
 
-exports.PositionDelete = async function (req, res, next) {
-    const result = validationResult(req);
-    if (!result.isEmpty()) return res.send(result.array());
-    const data = matchedData(req);
+exports.PositionDelete = async function (id) {
+    let positionId = parseInt(id);
 
-    let position = await prisma.positions.findFirst({
-        where: { positionid: parseInt(data.id) },
-    });
+    let position = await positionsModel.GetPositionById(positionId);
 
     if (!position)
         return res.status(400).send({ msg: "This position Does Not Exist" });
 
-    let deletePosition = await prisma.positions.delete({
-        where: {
-            positionid: parseInt(data.id)
-        }
-    })
+    let deletePosition = positionsModel.DeletePosition(positionId);
 
-    return res.status(200).send({
-        msg: `${deletePosition.name} has been deleted`
-    });
+    return deletePosition;
 }
 
-exports.PositionUpdate = async function (req, res, next) {
-    const result = validationResult(req);
-    if (!result.isEmpty()) return res.send(result.array());
-    const data = matchedData(req);
-    const body = matchedData(req, { locations: ['body'] });
+exports.PositionUpdate = async function (id, data) {
+    let positionId = parseInt(id);
 
-    let position = await prisma.positions.findFirst({
-        where: { positionid: parseInt(data.id) },
-    });
+    let position = await positionsModel.GetPositionById(positionId);
 
     if (!position) return res.status(400).send({ msg: "This Does Not Exist" });
 
-    const updatedPosition = await prisma.positions.update({
-        where: {
-            positionid: parseInt(data.id)
-        },
-        data: body
-    })
+    let updatedPosition = await positionsModel.UpdatePosition(positionId, data);
 
-    return res.status(200).send(updatedPosition);
+    return updatedPosition;
 }

@@ -1,5 +1,5 @@
 const { matchedData, validationResult } = require('express-validator');
-const rolesModel = require('../model/roles')
+const rolesModel = require('../model/role')
 
 exports.RoleGetAll = async function () {
     const allRoles = await rolesModel.GetAllRoles()

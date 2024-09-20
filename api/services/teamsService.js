@@ -1,5 +1,5 @@
 const { matchedData, validationResult } = require('express-validator');
-const teamsModel = require('../model/teams')
+const teamsModel = require('../model/team')
 
 exports.TeamGetAll = async function () {
     const allTeams = await teamsModel.GetAllTeams();

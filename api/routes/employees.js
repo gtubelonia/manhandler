@@ -4,26 +4,26 @@ var asyncHandler = require('express-async-handler');
 var { query, checkSchema } = require('express-validator');
 var createEmployeeValidationSchema = require('./validationSchemas/employeeCreate');
 var updateEmployeeValidationSchema = require('./validationSchemas/employeeUpdate');
-var employeesService = require('../services/employeesService');
+var employeesController = require('../controllers/employees/employees.controller');
 
 router.get('/all',
-    asyncHandler(employeesService.EmployeesGetAll)
+    asyncHandler(employeesController.GetAllEmployees)
 )
 
 router.post('/add',
     checkSchema(createEmployeeValidationSchema),
-    asyncHandler(employeesService.EmployeesAdd)
+    asyncHandler(employeesController.AddNewEmployee)
 )
 
 router.patch('/deactivate',
     query('id').notEmpty().isNumeric(),
-    asyncHandler(employeesService.EmployeesDeactivate)
+    asyncHandler(employeesController.DeactivateEmployee)
 )
 
 router.patch('/update',
     query('id').notEmpty().isNumeric(),
     checkSchema(updateEmployeeValidationSchema),
-    asyncHandler(employeesService.EmployeesUpdate)
+    asyncHandler(employeesController.UpdateEmployee)
 )
 
 module.exports = router;

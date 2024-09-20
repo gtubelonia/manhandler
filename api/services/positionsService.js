@@ -2,13 +2,13 @@ var { PrismaClient } = require('@prisma/client');
 var prisma = new PrismaClient();
 var { matchedData, validationResult } = require('express-validator');
 
-async function PositionGetAll(req, res, next) {
+exports.PositionGetAll = async function (req, res, next) {
     const allpositions = await prisma.positions.findMany();
 
     return res.status(200).send(allpositions);
 };
 
-async function PositionAdd(req, res, next) {
+exports.PositionAdd = async function (req, res, next) {
     const result = validationResult(req);
     if (!result.isEmpty()) return res.send(result.array());
     const data = matchedData(req);
@@ -30,7 +30,7 @@ async function PositionAdd(req, res, next) {
     return res.status(200).send(newposition);
 }
 
-async function PositionDelete(req, res, next) {
+exports.PositionDelete = async function (req, res, next) {
     const result = validationResult(req);
     if (!result.isEmpty()) return res.send(result.array());
     const data = matchedData(req);
@@ -53,7 +53,7 @@ async function PositionDelete(req, res, next) {
     });
 }
 
-async function PositionUpdate(req, res, next) {
+exports.PositionUpdate = async function (req, res, next) {
     const result = validationResult(req);
     if (!result.isEmpty()) return res.send(result.array());
     const data = matchedData(req);
@@ -73,11 +73,4 @@ async function PositionUpdate(req, res, next) {
     })
 
     return res.status(200).send(updatedPosition);
-}
-
-module.exports = {
-    PositionGetAll,
-    PositionAdd,
-    PositionDelete,
-    PositionUpdate,
 }

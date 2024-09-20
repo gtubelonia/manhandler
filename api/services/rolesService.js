@@ -2,13 +2,13 @@ var { PrismaClient } = require('@prisma/client');
 var prisma = new PrismaClient();
 var { matchedData, validationResult } = require('express-validator');
 
-async function RoleGetAll(req, res, next) {
+exports.RoleGetAll = async function (req, res, next) {
     const allRoles = await prisma.systemroles.findMany();
 
     return res.status(200).send(allRoles);
 };
 
-async function RoleAdd(req, res, next) {
+exports.RoleAdd = async function (req, res, next) {
     const result = validationResult(req);
     if (!result.isEmpty()) return res.send(result.array());
     const data = matchedData(req);
@@ -29,7 +29,7 @@ async function RoleAdd(req, res, next) {
     return res.status(200).send(newRole);
 }
 
-async function RoleDelete(req, res, next) {
+exports.RoleDelete = async function (req, res, next) {
     const result = validationResult(req);
     if (!result.isEmpty()) return res.send(result.array());
     const data = matchedData(req);
@@ -53,7 +53,7 @@ async function RoleDelete(req, res, next) {
     });
 }
 
-async function RoleUpdate(req, res, next) {
+exports.RoleUpdate = async function (req, res, next) {
     const result = validationResult(req);
     if (!result.isEmpty()) return res.send(result.array());
     const data = matchedData(req);
@@ -73,12 +73,4 @@ async function RoleUpdate(req, res, next) {
     })
     //TODO: maybe add resources/permissions too?
     return res.status(200).send(updatedRole);
-}
-
-
-module.exports = {
-    RoleGetAll,
-    RoleAdd,
-    RoleDelete,
-    RoleUpdate,
 }

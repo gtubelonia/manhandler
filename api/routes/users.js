@@ -3,28 +3,25 @@ var router = express.Router();
 var asyncHandler = require('express-async-handler')
 var { query, checkSchema } = require('express-validator');
 var createUserValidationSchema = require('./validationSchemas/userCreate');
-var { PrismaClient } = require('@prisma/client');
-var prisma = new PrismaClient();
-const { UserRegister, UserDeactivate, UserActivate, UserGetAll } = require('../controllers/users/usersController');
+const usersController = require('../controllers/users/users.controller');
 
 router.get('/all',
-  asyncHandler(UserGetAll)
+  asyncHandler(usersController.GetAllUsers)
 );
 
 router.post('/register',
   checkSchema(createUserValidationSchema),
-  asyncHandler(UserRegister)
+  asyncHandler(usersController.RegisterUser)
 );
 
 router.patch('/deactivate',
   query('id').notEmpty().isNumeric(),
-  asyncHandler(UserDeactivate)
+  asyncHandler(usersController.DeactivateUser)
 );
 
 router.patch('/activate',
   query('id').notEmpty().isNumeric(),
-  asyncHandler(UserActivate)
+  asyncHandler(usersController.ActivateUser)
 );
-
 
 module.exports = router;

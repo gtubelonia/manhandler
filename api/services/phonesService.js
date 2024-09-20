@@ -2,7 +2,7 @@ var { PrismaClient } = require('@prisma/client');
 var prisma = new PrismaClient();
 var { matchedData, validationResult } = require('express-validator');
 
-async function PhoneGetAllByEmployeeId(req, res, next) {
+exports.PhoneGetAllByEmployeeId = async function (req, res, next) {
     const allPhones = await prisma.phone.findMany({
         where: {
             employeeid: parseInt(data.id)
@@ -12,7 +12,7 @@ async function PhoneGetAllByEmployeeId(req, res, next) {
     return res.status(200).send(allPhones);
 };
 
-async function PhoneAddToUser(req, res, next) {
+exports.PhoneAddToUser = async function (req, res, next) {
     const result = validationResult(req);
     if (!result.isEmpty()) return res.send(result.array());
     const data = matchedData(req);
@@ -40,7 +40,7 @@ async function PhoneAddToUser(req, res, next) {
     return res.status(200).send(newPhone);
 }
 
-async function PhoneDelete(req, res, next) {
+exports.PhoneDelete = async function (req, res, next) {
     const result = validationResult(req);
     if (!result.isEmpty()) return res.send(result.array());
     const data = matchedData(req);
@@ -63,7 +63,7 @@ async function PhoneDelete(req, res, next) {
     });
 }
 
-async function PhoneUpdate(req, res, next) {
+exports.PhoneUpdate = async function (req, res, next) {
     const result = validationResult(req);
     if (!result.isEmpty()) return res.send(result.array());
     const data = matchedData(req);
@@ -83,12 +83,4 @@ async function PhoneUpdate(req, res, next) {
     })
 
     return res.status(200).send(updatedPhone);
-}
-
-
-module.exports = {
-    PhoneGetAllByEmployeeId,
-    PhoneAddToUser,
-    PhoneDelete,
-    PhoneUpdate,
 }

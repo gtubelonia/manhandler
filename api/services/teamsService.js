@@ -2,13 +2,13 @@ var { PrismaClient } = require('@prisma/client');
 var prisma = new PrismaClient();
 var { matchedData, validationResult } = require('express-validator');
 
-async function TeamGetAll(req, res, next) {
+exports.TeamGetAll = async function (req, res, next) {
     const allteams = await prisma.teams.findMany();
 
     return res.status(200).send(allteams);
 };
 
-async function TeamAdd(req, res, next) {
+exports.TeamAdd = async function (req, res, next) {
     const result = validationResult(req);
     if (!result.isEmpty()) return res.send(result.array());
     const data = matchedData(req, { includeOptionals: true });
@@ -31,7 +31,7 @@ async function TeamAdd(req, res, next) {
     return res.status(200).send(newteam);
 }
 
-async function TeamDelete(req, res, next) {
+exports.TeamDelete = async function (req, res, next) {
     const result = validationResult(req);
     if (!result.isEmpty()) return res.send(result.array());
     const data = matchedData(req);
@@ -54,7 +54,7 @@ async function TeamDelete(req, res, next) {
     });
 }
 
-async function TeamUpdate(req, res, next) {
+exports.TeamUpdate = async function (req, res, next) {
     const result = validationResult(req);
     if (!result.isEmpty()) return res.send(result.array());
     const data = matchedData(req);
@@ -74,11 +74,4 @@ async function TeamUpdate(req, res, next) {
     })
 
     return res.status(200).send(updatedTeam);
-}
-
-module.exports = {
-    TeamGetAll,
-    TeamAdd,
-    TeamDelete,
-    TeamUpdate,
 }

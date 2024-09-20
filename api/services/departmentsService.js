@@ -2,13 +2,13 @@ var { PrismaClient } = require('@prisma/client');
 var prisma = new PrismaClient();
 var { matchedData, validationResult } = require('express-validator');
 
-async function DepartmentGetAll(req, res, next) {
+exports.DepartmentGetAll = async function (req, res, next) {
     const alldepartments = await prisma.departments.findMany();
 
     return res.status(200).send(alldepartments);
 };
 
-async function DepartmentAdd(req, res, next) {
+exports.DepartmentAdd = async function (req, res, next) {
     const result = validationResult(req);
     if (!result.isEmpty()) return res.send(result.array());
     const data = matchedData(req, { includeOptionals: true });
@@ -32,7 +32,7 @@ async function DepartmentAdd(req, res, next) {
     return res.status(200).send(newdepartment);
 }
 
-async function DepartmentDelete(req, res, next) {
+exports.DepartmentDelete = async function (req, res, next) {
     const result = validationResult(req);
     if (!result.isEmpty()) return res.send(result.array());
     const data = matchedData(req);
@@ -55,7 +55,7 @@ async function DepartmentDelete(req, res, next) {
     });
 }
 
-async function DepartmentUpdate(req, res, next) {
+exports.DepartmentUpdate = async function (req, res, next) {
     const result = validationResult(req);
     if (!result.isEmpty()) return res.send(result.array());
     const data = matchedData(req);
@@ -75,11 +75,4 @@ async function DepartmentUpdate(req, res, next) {
     })
 
     return res.status(200).send(updatedDepartment);
-}
-
-module.exports = {
-    DepartmentGetAll,
-    DepartmentAdd,
-    DepartmentDelete,
-    DepartmentUpdate,
 }

@@ -2,13 +2,13 @@ var { PrismaClient } = require('@prisma/client');
 var prisma = new PrismaClient();
 var { matchedData, validationResult } = require('express-validator');
 
-async function EmployeesGetAll(req, res, next) {
+exports.EmployeesGetAll = async function (req, res, next) {
     const employees = await prisma.employees.findMany();
 
     return res.status(200).send(employees);
 }
 
-async function EmployeesAdd(req, res, next) {
+exports.EmployeesAdd = async function (req, res, next) {
     const result = validationResult(req);
     if (!result.isEmpty()) return res.send(result.array());
     const data = matchedData(req);
@@ -39,7 +39,7 @@ async function EmployeesAdd(req, res, next) {
     return res.status(201).send(newEmployee);
 }
 
-async function EmployeesUpdate(req, res, next) {
+exports.EmployeesUpdate = async function (req, res, next) {
     const result = validationResult(req);
     if (!result.isEmpty()) return res.send(result.array());
     const data = matchedData(req);
@@ -61,7 +61,7 @@ async function EmployeesUpdate(req, res, next) {
     return res.status(200).send(updatedEmployee);
 }
 
-async function EmployeesDeactivate(req, res, next) {
+exports.EmployeesDeactivate = async function (req, res, next) {
     const result = validationResult(req);
     if (!result.isEmpty()) return res.send(result.array());
     const data = matchedData(req);
@@ -87,5 +87,3 @@ async function EmployeesDeactivate(req, res, next) {
         msg: `${deactivateEmployee.firstname} ${deactivateEmployee.lastname} has been deactivated`
     });
 }
-
-module.exports = { EmployeesGetAll, EmployeesAdd, EmployeesDeactivate, EmployeesUpdate }

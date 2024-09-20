@@ -2,7 +2,7 @@ var { PrismaClient } = require('@prisma/client');
 var prisma = new PrismaClient();
 var { matchedData, validationResult } = require('express-validator');
 
-async function AddressGetAllByEmployeeId(req, res, next) {
+exports.AddressGetAllByEmployeeId = async function (req, res, next) {
     const result = validationResult(req);
     if (!result.isEmpty()) return res.send(result.array());
     const data = matchedData(req);
@@ -16,7 +16,7 @@ async function AddressGetAllByEmployeeId(req, res, next) {
     return res.status(200).send(allAddresss);
 };
 
-async function AddressAddToEmployee(req, res, next) {
+exports.AddressAddToEmployee = async function (req, res, next) {
     const result = validationResult(req);
     if (!result.isEmpty()) return res.send(result.array());
     const data = matchedData(req);
@@ -43,7 +43,7 @@ async function AddressAddToEmployee(req, res, next) {
     return res.status(200).send(newAddress);
 }
 
-async function AddressDelete(req, res, next) {
+exports.AddressDelete = async function (req, res, next) {
     const result = validationResult(req);
     if (!result.isEmpty()) return res.send(result.array());
     const data = matchedData(req);
@@ -66,7 +66,7 @@ async function AddressDelete(req, res, next) {
     });
 }
 
-async function AddressUpdate(req, res, next) {
+exports.AddressUpdate = async function (req, res, next) {
     const result = validationResult(req);
     if (!result.isEmpty()) return res.send(result.array());
     const data = matchedData(req);
@@ -86,12 +86,4 @@ async function AddressUpdate(req, res, next) {
     })
 
     return res.status(200).send(updatedAddress);
-}
-
-
-module.exports = {
-    AddressGetAllByEmployeeId,
-    AddressAddToEmployee,
-    AddressDelete,
-    AddressUpdate,
 }
